@@ -11,5 +11,6 @@ namespace APIBancoBufunfa.Controllers
     [ApiController]
     public class SaqueController : ControllerBase
     {
+
     }
 }

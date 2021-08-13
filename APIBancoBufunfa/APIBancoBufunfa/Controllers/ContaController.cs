@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using APIBancoBufunfa.Data;
+using APIBancoBufunfa.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,17 +13,42 @@ namespace APIBancoBufunfa.Controllers
     [ApiController]
     public class ContaController : ControllerBase
     {
+        private ContaContext _context;
+
+        public ContaController(ContaContext context)
+        {
+            _context = context;
+        }
+
 
         [HttpPost]
-        public IActionResult CriaConta()
+        public IActionResult CriaConta([FromBody] Conta conta)
         {
-            return NoContent();
+            //Adicionando e salvando um objeto
+            _context.Contas.Add(conta);
+            _context.SaveChanges();
+
+            //O primeiro parâmetro é a lógica de recuperar que deve ser usada, o segundo é a propriedade que deve ser herdada e o terceiro o objeto que está se referindo
+            return CreatedAtAction(nameof(BuscaContaPorId), new { id = conta.Id }, conta);
         }
 
         [HttpGet]
         public IActionResult BuscaConta()
         {
-            return Ok();
+            return Ok(_context.Contas);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult BuscaContaPorId(int id)
+        {
+            Conta conta = _context.Contas.FirstOrDefault(conta => conta.Id == id);
+
+            if (conta != null)
+            {
+                return Ok(conta);
+            }
+
+            return NotFound($"A conta com o id {id} não pode ser achada!");
         }
 
         [HttpPut]
