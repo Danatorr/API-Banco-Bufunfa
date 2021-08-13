@@ -11,10 +11,10 @@ namespace APIBancoBufunfa.Models
         [Key]
         [Required]
         public int Id { get; set; }
-        public double Saldo {  get; private set; }
+        public double Saldo {  get; set; }
         [Required]
-        public string Titular { get; private set; }
+        public string Titular { get; set; }
         [Required]
-        public char Tipo { get; protected set; } //Só pode ser C (para corrente) e P (para poupança)
+        public string Tipo { get; set; } //Só pode ser 1 (para corrente) ou 2 (para poupança)
     }
 }

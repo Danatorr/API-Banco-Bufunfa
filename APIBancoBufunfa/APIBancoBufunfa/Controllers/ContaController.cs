@@ -51,16 +51,36 @@ namespace APIBancoBufunfa.Controllers
             return NotFound($"A conta com o id {id} não pode ser achada!");
         }
 
-        [HttpPut]
-        public IActionResult AtualizaConta()
+        [HttpPut("{id}")]
+        public IActionResult AtualizaConta([FromBody] Conta contaNova , int id)
         {
-            return Ok();
+            Conta conta = _context.Contas.FirstOrDefault(conta => conta.Id == id);
+
+            if (conta != null)
+            {
+                conta.Titular = contaNova.Titular;
+                conta.Saldo = contaNova.Saldo;
+                conta.Tipo = contaNova.Tipo;
+                _context.SaveChanges();
+
+                return NoContent();
+            }
+
+            return NotFound($"A conta com o id {id} não pode ser achada!");
         }
 
-        [HttpDelete]
-        public IActionResult DeletaConta()
+        [HttpDelete("{id}")]
+        public IActionResult DeletaConta(int id)
         {
-            return NoContent();
+            Conta conta = _context.Contas.FirstOrDefault(conta => conta.Id == id);
+
+            if (conta != null)
+            {
+                _context.Remove(conta);
+                _context.SaveChanges();
+                return NoContent();
+            }
+            return NotFound($"A conta com o id {id} não pode ser achada!");
         }
     }
 }
