@@ -11,33 +11,25 @@ namespace APIBancoBufunfa.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SaqueController : ControllerBase
+    public class DepositoController : ControllerBase
     {
         private ContaContext _context;
 
-        public SaqueController(ContaContext context)
+        public DepositoController(ContaContext context)
         {
             _context = context;
         }
 
         [HttpPut("{id}")]
-        public IActionResult Sacar(int id, int valor)
+        public IActionResult Depositar(int id, int valor)
         {
             Conta conta = _context.Contas.FirstOrDefault(conta => conta.Id == id);
 
             if (conta != null)
             {
-                //Sei que alterar o valor direto é quase um crime contra POO, mas para simplificar fiz assim, talvez com mais tempo e estudo fosse possível fazer encapsulamento, etc.
-                if (conta.Saldo >= valor)
-                {
-                    conta.Saldo -= valor;
-                    _context.SaveChanges();
-                    return NoContent();
-                }
-                else
-                {
-                    return NotFound($"Esta conta não tem saldo suficiente!");
-                }
+                conta.Saldo += valor;
+                _context.SaveChanges();
+                return NoContent();
             }
 
             return NotFound($"A conta com Id {id} não pode ser achada!");
