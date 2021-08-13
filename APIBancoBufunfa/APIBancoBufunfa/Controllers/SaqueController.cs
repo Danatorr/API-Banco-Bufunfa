@@ -28,18 +28,34 @@ namespace APIBancoBufunfa.Controllers
             if (conta != null)
             {
                 //Sei que alterar o valor direto é quase um crime contra POO, mas para simplificar fiz assim, talvez com mais tempo e estudo fosse possível fazer encapsulamento, etc.
-                if (conta.Saldo >= valor)
+                if (conta.Tipo == "2")
                 {
-                    conta.Saldo -= valor;
-                    _context.SaveChanges();
-                    return NoContent();
+                    if (conta.Saldo >= valor)
+                    {
+                        conta.Saldo -= valor;
+                        _context.SaveChanges();
+                        return NoContent();
+                    }
+                    else
+                    {
+                        return NotFound($"Esta conta não tem saldo suficiente!");
+                    }
                 }
-                else
+                else if (conta.Tipo == "1")
                 {
-                    return NotFound($"Esta conta não tem saldo suficiente!");
+                    //O valor de 1.038 é referente ao saque com CPMF
+                    if (conta.Saldo >= valor * 1.038)
+                    {
+                        conta.Saldo -= valor * 1.038;
+                        _context.SaveChanges();
+                        return NoContent();
+                    }
+                    else
+                    {
+                        return NotFound($"Esta conta não tem saldo suficiente!");
+                    }
                 }
             }
-
             return NotFound($"A conta com Id {id} não pode ser achada!");
         }
     }
